@@ -8,7 +8,8 @@
 ShaderProgram::ShaderProgram(OpenGLContext *context)
     : vertShader(), fragShader(), prog(),
       attrPos(-1), attrNor(-1), attrCol(-1),
-      unifModel(-1), unifModelInvTr(-1), unifViewProj(-1), unifColor(-1),unifSunDir(-1),
+      unifModel(-1), unifModelInvTr(-1), unifViewProj(-1), unifColor(-1),
+      unifSunDir(-1),unifSunColor(-1),unifSkyBaseColor(-1),
       context(context)
 {}
 
@@ -74,6 +75,8 @@ void ShaderProgram::create(const char *vertfile, const char *fragfile)
     unifEye = context->glGetUniformLocation(prog, "u_Eye");
     unifTime = context->glGetUniformLocation(prog, "u_Time");
     unifSunDir = context->glGetUniformLocation(prog, "u_SunDir");
+    unifSunColor = context->glGetUniformLocation(prog, "u_SunColor");
+    unifSkyBaseColor = context->glGetUniformLocation(prog, "u_SkyBaseColor");
 }
 
 void ShaderProgram::useMe()
@@ -146,6 +149,26 @@ void ShaderProgram::setSunDir(glm::vec3 sunDir)
     if(unifSunDir != -1)
     {
         context->glUniform3fv(unifSunDir, 1, &sunDir[0]);
+    }
+}
+
+void ShaderProgram::setSunColor(glm::vec3 sunColor)
+{
+    useMe();
+
+    if(unifSunColor != -1)
+    {
+        context->glUniform3fv(unifSunColor, 1, &sunColor[0]);
+    }
+}
+
+void ShaderProgram::setSkyColor(glm::vec3 skyBaseColor)
+{
+    useMe();
+
+    if(unifSkyBaseColor != -1)
+    {
+        context->glUniform3fv(unifSkyBaseColor, 1, &skyBaseColor[0]);
     }
 }
 

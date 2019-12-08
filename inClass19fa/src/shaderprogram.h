@@ -29,6 +29,8 @@ public:
     int unifEye;
     int unifTime;
     int unifSunDir; // A handle for the "uniform" vec3 representing the sun direction
+    int unifSunColor; // A handle for the "uniform" vec3 representing the sun light color
+    int unifSkyBaseColor; // A handle for the "uniform" vec3 representing the sky base color
 
 public:
     ShaderProgram(OpenGLContext* context);
@@ -44,6 +46,10 @@ public:
     void setGeometryColor(glm::vec4 color);
     // Pass the sun direction to this shader on the GPU
     void setSunDir(glm::vec3 sunDir);
+    // Pass the sun color to this shader on the GPU
+    void setSunColor(glm::vec3 sunColor);
+    // Pass the sun color to this shader on the GPU
+    void setSkyColor(glm::vec3 skyBaseColor);
 
     // Draw the given object to our screen using this ShaderProgram's shaders
     void draw(Drawable &d);

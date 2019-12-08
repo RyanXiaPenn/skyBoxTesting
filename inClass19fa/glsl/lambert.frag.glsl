@@ -12,6 +12,7 @@
 // position, light position, and vertex color.
 
 uniform vec4 u_Color; // The color with which to render this instance of geometry.
+uniform vec3 u_SunColor;
 
 // These are the interpolated values out of the rasterizer, so you can't know
 // their specific values without knowing the vertices that contributed to them
@@ -35,5 +36,5 @@ void main()
         vec3 ambientLight = vec3(0.5) * vec3(144, 96, 144) / 255.0;
 
         // Compute final shaded color
-        out_Col = vec4(diffuseLight + ambientLight, 1) * diffuseColor;
+        out_Col = vec4(diffuseLight + ambientLight, 1) * vec4(u_SunColor, 1) * diffuseColor;
 }

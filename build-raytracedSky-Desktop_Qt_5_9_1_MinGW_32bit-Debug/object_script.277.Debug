@@ -13,6 +13,7 @@ INPUT(
 ./debug/terrain.o
 ./debug/worldaxes.o
 ./debug/quad.o
+./debug/sunandskycolor.o
 ./debug/qrc_glsl.o
 ./debug/moc_mainwindow.o
 ./debug/moc_mygl.o

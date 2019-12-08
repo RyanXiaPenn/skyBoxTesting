@@ -9,6 +9,7 @@
 #include "camera.h"
 #include <scene/terrain.h>
 #include <scene/quad.h>
+#include <sunandskycolor.h>
 
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLShaderProgram>
@@ -37,6 +38,10 @@ private:
     /// Timer linked to timerUpdate(). Fires approx. 60 times per second
     QTimer timer;
 
+    // the sun and sky
+    sunAndSkyColor sunAndSky;
+
+
     void MoveMouseToCenter(); // Forces the mouse position to the screen's center. You should call this
                               // from within a mouse move event after reading the mouse movement so that
                               // your mouse stays within the screen bounds and is always read.
@@ -51,7 +56,6 @@ public:
     void paintGL();
 
     void GLDrawScene();
-    glm::vec3 computeSunDir();
 
 protected:
     void keyPressEvent(QKeyEvent *e);

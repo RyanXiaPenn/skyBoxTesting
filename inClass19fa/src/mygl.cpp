@@ -11,7 +11,7 @@ MyGL::MyGL(QWidget *parent)
       mp_geomCube(new Cube(this)), mp_worldAxes(new WorldAxes(this)),
       mp_progLambert(new ShaderProgram(this)), mp_progFlat(new ShaderProgram(this)),
       mp_progSky(new ShaderProgram(this)), mp_geomQuad(new Quad(this)),
-      mp_camera(new Camera()), mp_terrain(new Terrain())
+      mp_camera(new Camera()), mp_terrain(new Terrain()), sunAndSky(0.05)
 {
     // Connect the timer to a function so that when the timer ticks the function is executed
     connect(&timer, SIGNAL(timeout()), this, SLOT(timerUpdate()));
@@ -139,7 +139,13 @@ void MyGL::paintGL()
     mp_progSky->useMe();
     this->glUniform3f(mp_progSky->unifEye, mp_camera->eye.x, mp_camera->eye.y, mp_camera->eye.z);
     this->glUniform1f(mp_progSky->unifTime, time++);
-    mp_progSky->setSunDir(computeSunDir());
+    // compute and set sun direction and color for lambert and sky shader
+    sunAndSky.computeSunDirAndColor(time);
+    mp_progSky->setSunDir(sunAndSky.sunDir);
+    mp_progSky->setSunColor(sunAndSky.sunColor);
+    mp_progLambert->setSunDir(sunAndSky.sunDir);
+    mp_progLambert->setSunColor(sunAndSky.sunColor);
+    mp_progSky->setSkyColor(sunAndSky.skyBaseColor);
 
 
     mp_progSky->draw(*mp_geomQuad);
@@ -183,11 +189,7 @@ void MyGL::GLDrawScene()
     }
 }
 
-glm::vec3 MyGL::computeSunDir()
-{
 
-    return glm::vec3(glm::rotate(glm::mat4(1.f), 0.1f * time, glm::vec3(1.f, 0.f, 0.f)) * glm::vec4(0.f, 0.f, 1.f, 1));
-}
 
 
 void MyGL::keyPressEvent(QKeyEvent *e)
