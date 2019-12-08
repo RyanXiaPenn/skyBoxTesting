@@ -264,30 +264,77 @@ void main()
     // use the sunDir computed in mygl
     vec3 sunDir = u_SunDir;
 
-    float sunSize = 20;
+    float sunSize = 10;
     float angle = acos(dot(rayDir, sunDir)) * 360.0 / PI;
 
-    //  ******** first Interval (from sunRise to Noon) ********
-    //if(sunDir[1] >= 0 && sunDir[2] >= 0)
-    if(true)
-    {
+    // the color only shows around the sun at low altitude
+    vec3 skyRiseHoriz = vec3(66.f, 22.f, 12.f) * (1.f/ 255.f);
+    vec3 skySetHoriz = vec3(66.f, 22.f, 12.f) * (1.f/ 255.f);
+    vec3 lessBlue = vec3(255.f, 255.f, 255.f) * (1.f/ 255.f);
+    vec3 moreBlue = vec3(0.f, 181.f, 255.f) * (1.f/ 255.f);
+    vec3 purpleNight = vec3(133.f, 89.f, 136.f) * (1.f/ 255.f);
+    vec3 darkNight = vec3(20.f, 24.f, 82.f) * (1.f/ 255.f);
+    vec3 tint;
+
+
         // If the angle between our ray dir and vector to center of sun
         // is less than the threshold, then we're looking at the sun
-        if(angle < sunSize) {
-            // Full center of sun
-            if(angle < 5) {
-                // the direction of the sun determines the sum color
-                outColor = u_SunColor;
-            }
-            // Corona of sun, mix with sky color
-            else {
-
-                outColor = mix(u_SunColor, u_SkyBaseColor, (angle - 5) / 15);
-            }
+    if(angle < sunSize) {
+        // Full center of sun
+        if(angle < sunSize * 0.75) {
+            // the direction of the sun determines the sum color
+            outColor = u_SunColor;
         }
-        // Otherwise our ray is looking into just the sky
+        // Corona of sun, mix with sky color
         else {
-            outColor = u_SkyBaseColor;
+
+            outColor = mix(u_SunColor, u_SkyBaseColor, (angle - sunSize*0.75) / (sunSize*0.25));
+        }
+    }
+    // Otherwise our ray is looking into just the sky
+    else {
+
+        if(sunDir[1] > 0)
+        {
+            // the sky should be bluer at a higher degree from horizon
+            tint = mix(lessBlue, moreBlue, rayDir[1]);
+            outColor = tint * u_SkyBaseColor;
+        }
+        else{
+            tint = mix(lessBlue, purpleNight, rayDir[1]);
+            outColor = tint * u_SkyBaseColor;
+
+        }
+
+
+//        if(angle <= 6*sunSize)
+//        {
+//            // from 20 to 40 degrees, the horizon
+//            outColor = mix(skyRiseHoriz, u_SkyBaseColor, (angle-sunSize)/((6-1)*sunSize));
+//            outColor = u_SkyBaseColor;
+//        }
+//        else{
+//            outColor = u_SkyBaseColor;
+//        }
+    }
+
+
+//    else if (false){
+//        // ********* afternoon section
+//        // If the angle between our ray dir and vector to center of sun
+//        // is less than the threshold, then we're looking at the sun
+//        if(angle < sunSize) {
+//            // Full center of sun
+//            if(angle < 5) {
+//                outColor = u_SunColor;
+//            }
+//            // Corona of sun, mix with sky color
+//            else {
+//                outColor = mix(u_SunColor, sunsetColor, (angle - 5) / 15);
+//            }
+//        }
+//        // Otherwise our ray is looking into just the sky
+//        else {
 //            float raySunDot = dot(rayDir, sunDir);
 //    #define SUNSET_THRESHOLD 0.75
 //    #define DUSK_THRESHOLD -0.1
@@ -297,53 +344,15 @@ void main()
 //            // Any dot product between 0.75 and -0.1 is a LERP b/t sunset and dusk color
 //            else if(raySunDot > DUSK_THRESHOLD) {
 //                float t = (raySunDot - SUNSET_THRESHOLD) / (DUSK_THRESHOLD - SUNSET_THRESHOLD);
-//                outColor = mix(outColor, noonColor, t);
+//                outColor = mix(outColor, duskColor, t);
 //            }
 //            // Any dot product <= -0.1 are pure dusk color
 //            else {
-//                outColor = noonColor;
-//                outColor = vec3(135, 206, 235) / 255.0;
+//                outColor = duskColor;
 //                //outColor = vec3(0, 0, 0);
 //            }
-        }
+//        }
 
-    }
-    else if (false){
-        // ********* afternoon section
-        // If the angle between our ray dir and vector to center of sun
-        // is less than the threshold, then we're looking at the sun
-        if(angle < sunSize) {
-            // Full center of sun
-            if(angle < 5) {
-                outColor = u_SunColor;
-            }
-            // Corona of sun, mix with sky color
-            else {
-                outColor = mix(u_SunColor, sunsetColor, (angle - 5) / 15);
-            }
-        }
-        // Otherwise our ray is looking into just the sky
-        else {
-            float raySunDot = dot(rayDir, sunDir);
-    #define SUNSET_THRESHOLD 0.75
-    #define DUSK_THRESHOLD -0.1
-            if(raySunDot > SUNSET_THRESHOLD) {
-                // Do nothing, sky is already correct color
-            }
-            // Any dot product between 0.75 and -0.1 is a LERP b/t sunset and dusk color
-            else if(raySunDot > DUSK_THRESHOLD) {
-                float t = (raySunDot - SUNSET_THRESHOLD) / (DUSK_THRESHOLD - SUNSET_THRESHOLD);
-                outColor = mix(outColor, duskColor, t);
-            }
-            // Any dot product <= -0.1 are pure dusk color
-            else {
-                outColor = duskColor;
-                //outColor = vec3(0, 0, 0);
-            }
-        }
-
-    }
-
-
+//    }
 
 }
