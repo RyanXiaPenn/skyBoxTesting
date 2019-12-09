@@ -149,6 +149,7 @@ void MyGL::paintGL()
 
 
     mp_progSky->draw(*mp_geomQuad);
+    //mp_progSky->useMe();
 
     GLDrawScene();
 
